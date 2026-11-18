@@ -1091,7 +1091,25 @@ body{background:#142a2b;color:#f5fff9}
 .traffic-card-head{justify-content:center;margin-bottom:15px}
 .traffic-card-title{font-size:13px}
 .traffic-card>.traffic-row{display:inline-flex;vertical-align:top;width:calc(50% - 9px);min-height:250px;margin:0 4px;padding:18px 12px 12px;border:0;border-radius:50%;aspect-ratio:1/1;flex-direction:column;justify-content:center;gap:8px;text-align:center;background:rgba(229,246,220,.34);box-shadow:inset 0 0 0 12px rgba(255,255,255,.12);position:relative;overflow:hidden}
-.traffic-card>.traffic-row:before{content:"";position:absolute;inset:12px;border:8px dotted rgba(255,255,255,.82);border-radius:50%;pointer-events:none}
+.traffic-card>.traffic-row:before{
+  content:"";position:absolute;inset:12px;border:0;border-radius:50%;
+  pointer-events:none;
+  background:repeating-conic-gradient(
+    from 0deg,
+    rgba(255,255,255,.98) 0deg 1.55deg,
+    transparent 1.55deg 8deg
+  );
+  -webkit-mask:radial-gradient(circle,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  mask:radial-gradient(circle,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  animation:meterDotsSpin var(--meter-speed,2.4s) linear infinite;
+  filter:drop-shadow(0 0 3px rgba(255,255,255,.45));
+}
+.traffic-card>.traffic-row.user:before{
+  animation-direction:reverse;
+  opacity:.9;
+}
+@keyframes meterDotsSpin{to{transform:rotate(360deg)}}
+
 .traffic-card .traffic-meta{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center}.traffic-card .traffic-value{order:1}.traffic-card .traffic-range{order:2}.traffic-card .traffic-label{order:3;margin-top:8px}
 .traffic-card .traffic-label{font-size:12px;color:#f5fff7;margin-bottom:8px}
 .traffic-card .traffic-value{font-size:clamp(22px,3vw,34px);color:#fff;text-align:center}
@@ -1119,6 +1137,317 @@ body{background:#142a2b;color:#f5fff9}
 .about-email:hover,.about-telegram:hover{background:#d9f5df28}
 @media(max-width:700px){.dashboard-layout{grid-template-columns:1fr}.dashboard-sidebar{min-height:0}.dashboard-panel{min-height:0}.traffic-card>.traffic-row{min-height:175px}.country-menu{grid-template-columns:1fr 1fr}}
 @media(max-width:390px){.traffic-card>.traffic-row{min-height:145px;padding:10px 5px}.traffic-card>.traffic-row:before{inset:7px;border-width:6px}.traffic-card .traffic-label{font-size:10px}.traffic-card .traffic-range{font-size:11px}}
+
+
+
+/* === MOBILE LAYOUT REPAIR === */
+@media (max-width: 700px) {
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .wrap {
+    width: calc(100% - 20px);
+    max-width: 100%;
+    padding-top: 12px;
+  }
+
+  .top {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .brand h1 {
+    font-size: 15px;
+  }
+
+  .theme {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .hero {
+    padding: 10px 4px 16px;
+  }
+
+  .hero h2 {
+    font-size: clamp(23px, 7vw, 31px);
+  }
+
+  .hero p {
+    font-size: 12px;
+    line-height: 1.9;
+  }
+
+  /* Two-row navigation avoids squeezed or clipped tabs on phones. */
+  .dashboard-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .dashboard-sidebar {
+    position: relative;
+    top: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    width: 100%;
+    min-height: 0;
+    padding: 9px;
+    overflow: visible;
+    border-radius: 17px;
+  }
+
+  .sidebar-caption,
+  .sidebar-status {
+    display: none !important;
+  }
+
+  .side-tab {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    min-width: 0;
+    min-height: 54px;
+    margin: 0;
+    padding: 8px 9px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .side-tab > span:last-child {
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .side-tab strong {
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  .side-tab small {
+    display: block;
+    font-size: 9px;
+    white-space: normal;
+  }
+
+  .side-icon {
+    width: 31px;
+    height: 31px;
+    min-width: 31px;
+    font-size: 17px;
+  }
+
+  .dashboard-content {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Prevent the fixed database sheet from being trapped by the glass panel. */
+  .dashboard-panel {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 13px;
+    overflow: visible !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .dashboard-panel > * {
+    max-width: 100%;
+  }
+
+  .database-picker[open] {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    top: auto !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: min(78dvh, 650px) !important;
+    z-index: 3000;
+    overflow: hidden;
+    border-radius: 20px 20px 14px 14px;
+  }
+
+  .database-picker[open] .database-grid {
+    max-height: calc(min(78dvh, 650px) - 68px) !important;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .database-picker[open] summary {
+    min-height: 58px;
+  }
+
+  .country-menu {
+    grid-template-columns: minmax(0, 1fr) !important;
+    max-height: 42vh;
+  }
+
+  .country-option {
+    min-width: 0;
+  }
+
+  /* Keep the two circular meters inside the phone width. */
+  .traffic-card {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    padding: 10px 0;
+    margin: 15px auto 10px;
+  }
+
+  .traffic-card-head {
+    grid-column: 1 / -1;
+    margin-bottom: 2px;
+  }
+
+  .traffic-card > .traffic-row {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+    margin: 0;
+    padding: 10px 5px;
+    border-radius: 50%;
+    gap: 5px;
+  }
+
+  .traffic-card > .traffic-row:before {
+    inset: 6px;
+    border: 0;
+    -webkit-mask: radial-gradient(circle, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    mask: radial-gradient(circle, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  }
+
+  .traffic-card .traffic-label {
+    font-size: clamp(9px, 2.8vw, 11px);
+    line-height: 1.5;
+    margin: 3px 0 0;
+  }
+
+  .traffic-card .traffic-value {
+    font-size: clamp(16px, 5vw, 23px);
+    line-height: 1.25;
+  }
+
+  .traffic-card .traffic-range {
+    font-size: clamp(10px, 3vw, 12px);
+  }
+
+  .public-ip-card,
+  .traffic-card,
+  .subscription-card {
+    max-width: 100%;
+  }
+
+  .grid,
+  .service-list,
+  .apn-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .result-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .endpoint-sheet {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .endpoint-sheet-card {
+    width: 100%;
+    max-height: 84dvh;
+    overflow-y: auto;
+    padding: 13px 14px max(18px, env(safe-area-inset-bottom));
+  }
+
+  .modal,
+  .apn-modal {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .modal-card,
+  .apn-modal-card {
+    width: 100%;
+    max-width: 460px;
+    max-height: 86dvh;
+    overflow-y: auto;
+    padding: 17px 16px max(20px, env(safe-area-inset-bottom));
+  }
+
+  .about-telegram,
+  .about-email {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .wrap {
+    width: calc(100% - 16px);
+  }
+
+  .dashboard-panel {
+    padding: 11px;
+  }
+
+  .side-tab {
+    min-height: 50px;
+    padding: 7px;
+    gap: 6px;
+  }
+
+  .side-tab strong {
+    font-size: 11px;
+  }
+
+  .side-tab small {
+    font-size: 8px;
+  }
+
+  .traffic-card {
+    gap: 7px;
+  }
+
+  .traffic-card > .traffic-row {
+    padding: 7px 3px;
+  }
+
+  .traffic-card > .traffic-row:before {
+    inset: 5px;
+    border: 0;
+    -webkit-mask: radial-gradient(circle, transparent calc(100% - 5px), #000 calc(100% - 4px));
+    mask: radial-gradient(circle, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .traffic-card>.traffic-row:before { animation: none !important; }
+}
 
 </style>
 </head>
@@ -2270,6 +2599,19 @@ function startTrafficDisplay() {
 
     dcEl.textContent = dcValue.toFixed(1) + " MB/s";
     userEl.textContent = formatUserRate(userValue);
+
+    // The dotted rings accelerate while their corresponding live numbers are changing,
+    // then ease down as the displayed value approaches its next target.
+    const dcRow = dcEl.closest(".traffic-row");
+    const userRow = userEl.closest(".traffic-row");
+    if (dcRow) {
+      const activity = Math.min(1, Math.abs(dcTarget - dcValue) / 18);
+      dcRow.style.setProperty("--meter-speed", (3.4 - activity * 2.1).toFixed(2) + "s");
+    }
+    if (userRow) {
+      const activity = Math.min(1, Math.abs(userTarget - userValue) / 2.5);
+      userRow.style.setProperty("--meter-speed", (3.5 - activity * 2.2).toFixed(2) + "s");
+    }
 
     requestAnimationFrame(animate);
   }
