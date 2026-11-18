@@ -1063,6 +1063,63 @@ body{background:#101020;color:#f4f2ff}
  .result-detail{padding:9px}
 }
 
+
+/* === SKETCH-MATCHED DASHBOARD === */
+body{background:#142a2b;color:#f5fff9}
+.bg{background:radial-gradient(ellipse at 78% 50%,rgba(197,208,132,.34),transparent 45%),radial-gradient(ellipse at 12% 15%,rgba(108,171,157,.34),transparent 42%),linear-gradient(135deg,#193b3b,#314b45 52%,#152d31)}
+.ambient{background:radial-gradient(circle at 85% 12%,#d5e5b52b,transparent 32%),radial-gradient(circle at 12% 86%,#8bd5c52c,transparent 35%)}
+.dashboard-layout{grid-template-columns:245px minmax(0,1fr);gap:20px;align-items:stretch}
+.dashboard-sidebar{min-height:620px;background:linear-gradient(155deg,rgba(193,235,212,.22),rgba(43,75,69,.48));border-color:#d8f5e14d}
+.side-tab{font-size:15px;padding:15px 12px;color:#f4fff8}
+.side-tab strong{font-size:15px}.side-tab small{font-size:10px}
+.side-icon{background:#d9f6e51c;color:#d9f6e5}
+.side-tab.active{background:#d5f2df26;border-color:#e0ffe66b;box-shadow:inset 0 0 18px #e5ffe512}
+.dashboard-panel{min-height:620px;background:linear-gradient(145deg,rgba(189,230,205,.27),rgba(147,183,158,.16));border-color:#d9f5df5c}
+.dashboard-panel::before{opacity:.25}
+.section-title:before{background:linear-gradient(#bce7d1,#e2e6ac)}
+.database-picker,.melli-picker,.collapsible{background:rgba(26,55,49,.42);border-color:#d5f3dc55}
+.database-card{background:rgba(26,55,49,.32)}
+.database-card.selected{background:linear-gradient(145deg,#7cae9466,#8d9b6b55);border-color:#d9f5df}
+.country-menu{background:rgba(32,65,57,.96);border-color:#d9f5df66;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.country-menu[hidden]{display:none}
+.country-option{background:#e7fff00c;border-color:#ffffff12}
+.country-option.active{background:#d9f5df26;border-color:#e4ffe0}
+.country-flag{width:42px;height:29px;min-width:42px}
+.subscription-card,.traffic-card,.public-ip-card{background:linear-gradient(135deg,rgba(205,245,216,.22),rgba(202,213,163,.16));border-color:#d9f5df66}
+/* circular network meters */
+.traffic-card{width:100%;max-width:720px;margin:22px auto 14px;padding:18px;border:0;box-shadow:none;background:transparent}
+.traffic-card-head{justify-content:center;margin-bottom:15px}
+.traffic-card-title{font-size:13px}
+.traffic-card>.traffic-row{display:inline-flex;vertical-align:top;width:calc(50% - 9px);min-height:250px;margin:0 4px;padding:18px 12px 12px;border:0;border-radius:50%;aspect-ratio:1/1;flex-direction:column;justify-content:center;gap:8px;text-align:center;background:rgba(229,246,220,.34);box-shadow:inset 0 0 0 12px rgba(255,255,255,.12);position:relative;overflow:hidden}
+.traffic-card>.traffic-row:before{content:"";position:absolute;inset:12px;border:8px dotted rgba(255,255,255,.82);border-radius:50%;pointer-events:none}
+.traffic-card .traffic-meta{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center}.traffic-card .traffic-value{order:1}.traffic-card .traffic-range{order:2}.traffic-card .traffic-label{order:3;margin-top:8px}
+.traffic-card .traffic-label{font-size:12px;color:#f5fff7;margin-bottom:8px}
+.traffic-card .traffic-value{font-size:clamp(22px,3vw,34px);color:#fff;text-align:center}
+.traffic-card .traffic-range{font-size:14px;color:#172a22;text-align:center}
+.traffic-wave{display:none}
+.traffic-footnote{display:none}
+/* bottom sheets */
+.modal,.apn-modal{align-items:flex-end;justify-content:center;padding:0 12px max(0px,env(safe-area-inset-bottom));background:#07151288;backdrop-filter:blur(7px)}
+.modal-card,.apn-modal-card{width:min(460px,100%);margin:0 auto;padding:20px 20px 24px;border-radius:24px 24px 0 0;border:1px solid #d9f5df66;border-bottom:0;background:linear-gradient(155deg,rgba(65,99,82,.98),rgba(23,48,44,.99));box-shadow:0 -16px 55px #0008;animation:sheetUp .32s cubic-bezier(.2,.8,.2,1)}
+.modal-card:before,.apn-modal-card:before{content:"";display:block;width:42px;height:4px;border-radius:9px;background:#ffffff66;margin:0 auto 17px}
+.endpoint-sheet{padding:0 12px max(0px,env(safe-area-inset-bottom))!important}
+.endpoint-sheet-card{width:min(520px,100%);max-height:82vh;border-radius:24px 24px 0 0;border-bottom:0;animation:sheetUp .32s cubic-bezier(.2,.8,.2,1)}
+.database-picker[open]{position:fixed;z-index:2100;left:50%;bottom:0;transform:translateX(-50%);width:min(620px,calc(100% - 20px));max-height:78vh;border-radius:23px 23px 0 0;background:linear-gradient(155deg,#426451,#1b3935);box-shadow:0 -18px 60px #0009;animation:sheetUp .3s ease}
+.database-picker[open] summary{border-bottom:1px solid #ffffff20}
+.database-picker.sheet-closing{animation:sheetDown .24s ease forwards}
+.database-picker[open] .database-grid{max-height:65vh}
+.database-picker[open] summary:after{content:"×";transform:none}
+@keyframes sheetDown{to{transform:translateY(110%);opacity:.4}}
+.sheet-closing .modal-card,.sheet-closing .apn-modal-card{animation:sheetDown .24s ease forwards}
+.sheet-closing .endpoint-sheet-card{animation:sheetDown .24s ease forwards}
+.welcome-channel{display:none!important}
+.about-telegram{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;border:1px solid #d9f5df66;border-radius:15px;background:#d9f5df18;color:#fff;text-decoration:none;font-weight:800}
+.about-telegram svg{width:26px;height:26px;fill:currentColor}
+.about-email{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;padding:16px;border:1px solid #d9f5df66;border-radius:15px;background:#d9f5df18;color:#fff;text-decoration:none;font-weight:800;direction:ltr}
+.about-email:hover,.about-telegram:hover{background:#d9f5df28}
+@media(max-width:700px){.dashboard-layout{grid-template-columns:1fr}.dashboard-sidebar{min-height:0}.dashboard-panel{min-height:0}.traffic-card>.traffic-row{min-height:175px}.country-menu{grid-template-columns:1fr 1fr}}
+@media(max-width:390px){.traffic-card>.traffic-row{min-height:145px;padding:10px 5px}.traffic-card>.traffic-row:before{inset:7px;border-width:6px}.traffic-card .traffic-label{font-size:10px}.traffic-card .traffic-range{font-size:11px}}
+
 </style>
 </head>
   
@@ -1078,7 +1135,6 @@ body{background:#101020;color:#f4f2ff}
     <span class="welcome-countdown" id="welcomeCountdown" aria-live="polite">۳</span>
     <h2 class="modal-title" id="welcomeTitle">خوش اومدی 👋</h2>
     <p class="modal-message">به پنل DARK VPN خوش اومدی</p>
-    <a class="modal-channel welcome-channel" href="https://t.me/darkvpnTG" target="_blank" rel="noopener">کانال تلگرام</a>
     <p class="welcome-note">این پنجره تا <span id="welcomeSeconds">۳</span> ثانیه دیگر بسته می‌شود</p>
   </div>
 </div>
@@ -1153,7 +1209,10 @@ body{background:#101020;color:#f4f2ff}
       <span class="side-icon">⌖</span><span><strong>Location</strong><small>انتخاب کشور</small></span>
     </button>
     <button class="side-tab" type="button" data-tab="services">
-      <span class="side-icon">⚙</span><span><strong>Services</strong><small>سایر امکانات</small></span>
+      <span class="side-icon">◈</span><span><strong>DARK ملی</strong><small>شبکه داخلی</small></span>
+    </button>
+    <button class="side-tab" type="button" data-tab="about">
+      <span class="side-icon">ⓘ</span><span><strong>About</strong><small>درباره ما</small></span>
     </button>
     <div class="sidebar-status"><span class="status-dot"></span> SYSTEM ONLINE</div>
   </aside>
@@ -1514,18 +1573,26 @@ body{background:#101020;color:#f4f2ff}
   <p class="notice-hint">توجه: این سیستم برای زمان قطعی اینترنت جهانی است</p>
 </section>
 
+<!-- ABOUT -->
+<section class="panel dashboard-panel" id="aboutPanel" data-panel="about" style="margin-top:0">
+  <h3 class="section-title">About</h3>
+  <p class="hint">راه‌های ارتباطی DARK VPN</p>
+  <a class="about-telegram" href="https://t.me/darkvpnTG" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 4.3 18.5 20c-.2 1.1-.8 1.4-1.7.9l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8 8.8-8c.4-.4-.1-.6-.6-.2L6.5 14.2 1.9 12.8c-1-.3-1-1 .2-1.5L20 4.2c.8-.3 1.5.2 1.7.1Z"/></svg>
+    <span>Telegram</span>
+  </a>
+  <a class="about-email" href="mailto:darkvpnTG@emil.com">
+    <span aria-hidden="true">✉</span>
+    <span>email: darkvpnTG@emil.com</span>
+  </a>
+</section>
+
 </div></div>
 
 <!-- FOOTER -->
 <footer class="foot">
-  <a class="telegram" href="https://t.me/darkvpnTG" target="_blank" rel="noopener" aria-label="کانال تلگرام DARK VPN">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M21.7 4.3 18.5 20c-.2 1.1-.8 1.4-1.7.9l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8 8.8-8c.4-.4-.1-.6-.6-.2L6.5 14.2 1.9 12.8c-1-.3-1-1 .2-1.5L20 4.2c.8-.3 1.5.2 1.7.1Z"/>
-    </svg>
-  </a>
-
   <div class="motto">یک قدم جلوتر از فیلترینگ 😎</div>
-  <div class="team">برای ورود به کانال روی آیکون تلگرام بزن</div>
+  <div class="team">DARK VPN • Network Interface</div>
   <small>v2.2.0 ✓ • Powered by Team "𝐃𝐚𝐫𝐤ᵛᵖⁿ"</small>
 </footer>
 
@@ -1697,6 +1764,18 @@ async function loadPublicIP() {
    DATABASE SELECTION
 ========================= */
 
+
+function closeAnimatedSheet(id){
+  const el=$(id); if(!el || el.classList.contains("hidden")) return;
+  el.classList.add("sheet-closing");
+  setTimeout(()=>{el.classList.add("hidden");el.classList.remove("sheet-closing");},240);
+}
+function closeDatabasePicker(){
+  const picker=$("databasePicker"); if(!picker || !picker.open) return;
+  picker.classList.add("sheet-closing");
+  setTimeout(()=>{picker.open=false;picker.classList.remove("sheet-closing");},240);
+}
+
 function setDatabaseCardsDisabled(disabled) {
   document.querySelectorAll(".database-card").forEach(card => {
     card.disabled = disabled;
@@ -1715,7 +1794,7 @@ function selectDatabase(database, card) {
   availableCountries.clear();
   countrySubscriptions.clear();
   clearTimeout(endpointTimer);
-  $("endpointModal").classList.add("hidden");
+  closeAnimatedSheet("endpointModal");
   $("subscriptionCard").hidden = true;
 
   document.querySelectorAll(".database-card").forEach(item => {
@@ -1724,7 +1803,7 @@ function selectDatabase(database, card) {
 
   setDatabaseCardsDisabled(true);
 
-  $("databasePicker").open = false;
+  closeDatabasePicker();
 
   $("databasePickerTitle").querySelector("span").textContent =
     "دیتابیس انتخاب‌شده: " + database;
@@ -1788,8 +1867,8 @@ function showDatabaseSuccess(database) {
   loadLocations();
 
   databaseCloseTimer = setTimeout(() => {
-    $("databaseModal").classList.add("hidden");
-  }, 5000);
+    closeAnimatedSheet("databaseModal");
+  }, 2200);
 }
 
 document.querySelectorAll(".database-card").forEach(card => {
@@ -1901,6 +1980,8 @@ async function loadLocations() {
 
     if (sortedCountries.length) {
       selectCountry(sortedCountries[0], false);
+      menu.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
       activateDashboardTab("location");
       setStatus("کشورها و لینک‌های اشتراک دریافت شدند: " + sortedCountries.length + " کشور.");
     } else {
@@ -1956,7 +2037,7 @@ function selectCountry(code, autoScan = true) {
   updateCountryPicker(code);
 
   clearTimeout(endpointTimer);
-  $("endpointModal").classList.add("hidden");
+  closeAnimatedSheet("endpointModal");
   $("scanEndpointBtn").disabled = false;
   $("subscriptionCard").hidden = false;
   $("subscriptionFlag").src = "https://flagcdn.com/w80/" + code.toLowerCase() + ".png";
@@ -2045,6 +2126,7 @@ async function copySelectedSubscription() {
     }
 
     $("copySubscriptionBtn").textContent = "کپی شد ✓";
+    setTimeout(()=>closeAnimatedSheet("endpointModal"),1100);
     setStatus("لینک اشتراک " + getCountryName(selectedCountry) + " در کلیپ‌بورد کپی شد.");
   } catch (error) {
     setStatus("کپی لینک انجام نشد: " + error.message, true);
@@ -2099,7 +2181,7 @@ const welcomeCountdownTimer = setInterval(() => {
   if ($("welcomeSeconds")) $("welcomeSeconds").textContent = String(welcomeRemaining);
   if (welcomeRemaining <= 0) {
     clearInterval(welcomeCountdownTimer);
-    $("welcomeModal").classList.add("hidden");
+    closeAnimatedSheet("welcomeModal");
   }
 }, 1000);
 
@@ -2209,10 +2291,15 @@ function activateDashboardTab(name){
   });
 }
 document.querySelectorAll(".side-tab").forEach(button=>{
-  button.addEventListener("click",()=>activateDashboardTab(button.dataset.tab));
+  button.addEventListener("click",()=>{
+    const tab=button.dataset.tab;
+    activateDashboardTab(tab);
+    if(tab==="database") $("databasePicker").open=true;
+    else closeDatabasePicker();
+  });
 });
 $("closeEndpointSheet").addEventListener("click",()=>{
-  $("endpointModal").classList.add("hidden");
+  closeAnimatedSheet("endpointModal");
 });
 
 /* =========================
