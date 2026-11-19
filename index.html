@@ -1445,8 +1445,110 @@ body{background:#142a2b;color:#f5fff9}
 }
 
 
-@media (prefers-reduced-motion: reduce) {
-  .traffic-card>.traffic-row:before { animation: none !important; }
+/* Seven-colour rotating rings; each ring keeps its own live-rate speed. */
+.traffic-card>.traffic-row {
+  --meter-speed: 3.4s;
+  background: radial-gradient(circle, rgba(255,211,78,.23) 0 54%, rgba(255,211,78,.09) 72%, rgba(255,211,78,.035) 100%) !important;
+  box-shadow: inset 0 0 0 2px rgba(255,211,78,.22), 0 0 22px rgba(255,195,55,.10) !important;
+}
+.traffic-card>.traffic-row:before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ff315a 0deg,
+    #ff9d27 52deg,
+    #ffe84a 104deg,
+    #52e66b 156deg,
+    #28d9e8 208deg,
+    #477cff 260deg,
+    #b64cff 312deg,
+    #ff315a 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  animation: meterDotsSpin var(--meter-speed, 3.4s) linear infinite;
+  animation-play-state: running !important;
+  will-change: transform;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px rgba(117,217,255,.55));
+}
+.traffic-card>.traffic-row.user {
+  --meter-speed: 3.5s;
+  background: radial-gradient(circle, rgba(76,230,139,.23) 0 54%, rgba(76,230,139,.09) 72%, rgba(76,230,139,.035) 100%) !important;
+  box-shadow: inset 0 0 0 2px rgba(76,230,139,.22), 0 0 22px rgba(76,230,139,.10) !important;
+}
+.traffic-card>.traffic-row.user:before {
+  animation-direction: reverse;
+  filter: drop-shadow(0 0 6px rgba(76,230,139,.42));
+}
+
+/* January 8 falling flower / broken-heart snow effect */
+.january-database .database-icon {font-size:23px}
+.january-particle-layer {
+  position:fixed; inset:0; overflow:hidden; pointer-events:none;
+  z-index:9998; contain:strict;
+}
+.january-particle {
+  position:absolute; top:-48px; left:var(--x); font-size:var(--size);
+  opacity:0; animation:januaryFall var(--duration) linear forwards;
+  filter:drop-shadow(0 2px 5px #0008);
+}
+@keyframes januaryFall {
+  0% { transform:translate3d(0,-8vh,0) rotate(0deg); opacity:0 }
+  10% { opacity:.95 }
+  90% { opacity:.85 }
+  100% { transform:translate3d(var(--drift),110vh,0) rotate(540deg); opacity:0 }
+}
+.frequency-meter {
+  display:inline-flex; vertical-align:middle; width:112px; height:112px;
+  margin:12px 5px; border-radius:50%; align-items:center; justify-content:center;
+  flex-direction:column; gap:2px; position:relative; overflow:hidden;
+  color:#fff; background:rgba(31,45,54,.72);
+  border:2px solid #83e7ff; box-shadow:0 0 18px #65dfff55,inset 0 0 14px #65dfff22;
+  transition:border-color .3s,box-shadow .3s,background .3s;
+}
+.frequency-meter:before {
+  content:""; position:absolute; inset:5px; border-radius:50%;
+  border:2px dotted #c8f7ff; animation:meterDotsSpin 3s linear infinite;
+}
+.frequency-meter #frequencyValue {font-size:24px;line-height:1.1;z-index:1}
+.frequency-meter .frequency-label,.frequency-meter small {font-size:10px;z-index:1}
+.frequency-meter.warning {
+  border-color:#ff4545; background:rgba(105,13,20,.88);
+  box-shadow:0 0 23px #ff2525aa,inset 0 0 16px #ff252555;
+  animation:frequencyPulse .7s ease-in-out infinite alternate;
+}
+.frequency-meter.warning:before {border-color:#ffb5b5}
+@keyframes frequencyPulse {to{box-shadow:0 0 30px #ff2020,inset 0 0 22px #ff252588}}
+.handling-panel {
+  margin-top:16px;padding:14px;border:1px solid #9b8bff55;
+  border-radius:16px;background:rgba(17,20,42,.5)
+}
+.handling-title {margin:0 0 10px;font-size:14px;color:#f2edff}
+.handling-title span {font-size:10px;color:#aeb5c9;font-weight:500;margin-right:8px}
+.handling-options {display:grid;gap:8px}
+.handling-option {
+  display:flex;align-items:center;gap:10px;padding:12px;
+  border:1px solid #ffffff22;border-radius:12px;background:#ffffff08;
+  cursor:pointer;min-width:0
+}
+.handling-option:has(input:checked) {border-color:#a99aff;background:#8170dc22;box-shadow:0 0 0 1px #a99aff33}
+.handling-option input {accent-color:#a99aff;width:17px;height:17px;flex:0 0 auto}
+.handling-copy {display:flex;justify-content:space-between;align-items:center;gap:10px;flex:1;min-width:0}
+.handling-copy strong {font-size:12px;line-height:1.7}
+.handling-copy small {font-size:10px;color:#a9dfff;direction:ltr;white-space:nowrap}
+.handling-status {font-size:11px;color:#b9eaff;margin-top:10px;min-height:20px}
+.handling-note {font-size:10px;line-height:1.8;color:#9da9bb;margin:7px 0 0}
+@media(max-width:700px) {
+  .frequency-meter {width:88px;height:88px;margin:12px 4px}
+  .frequency-meter #frequencyValue {font-size:20px}
+  .handling-copy {align-items:flex-start;flex-direction:column;gap:2px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .january-particle,.frequency-meter.warning {animation:none}
 }
 
 </style>
@@ -1583,6 +1685,11 @@ body{background:#142a2b;color:#f5fff9}
         <path class="wave-glow" d="M0 22 C8 22 8 14 16 14 S24 29 32 29 S40 18 48 18 S56 25 64 25 S72 12 80 12 S88 28 96 28 S104 18 112 18 S116 22 120 22"/>
       </svg>
     </div>
+    <div class="frequency-meter" id="frequencyMeter" aria-live="polite">
+      <div class="frequency-label">Feq</div>
+      <strong id="frequencyValue">2.80</strong>
+      <small id="frequencyMessage">GHz</small>
+    </div>
     <div class="traffic-footnote"></div>
   </div>
 
@@ -1609,11 +1716,6 @@ body{background:#142a2b;color:#f5fff9}
         <span class="database-info"><span class="database-name">Microsoft</span><span class="database-code">MIC</span></span>
       </button>
 
-      <button class="database-card" type="button" data-db="GTA VI">
-        <span class="database-icon"><img src="https://www.google.com/s2/favicons?domain=rockstargames.com/VI&sz=128" alt="GTA VI"></span>
-        <span class="database-info"><span class="database-name">GTA VI</span><span class="database-code">G-VI</span></span>
-      </button>
-      
       <button class="database-card" type="button" data-db="Bitcoin">
         <span class="database-icon"><img src="https://www.google.com/s2/favicons?domain=bitcoin.org&sz=128" alt="Bitcoin"></span>
         <span class="database-info"><span class="database-name">BITCOIN</span><span class="database-code">BTC</span></span>
@@ -1804,7 +1906,12 @@ body{background:#142a2b;color:#f5fff9}
         <span class="database-info"><span class="database-name">Visa</span><span class="database-code">VIS</span></span>
       </button>
       
-      <button class="database-card" type="button" data-db="TikTok">
+      <button class="database-card january-database" type="button" data-db="January 8">
+  <span class="database-icon" aria-hidden="true">🥀</span>
+  <span class="database-info"><span class="database-name">January 8</span><span class="database-code">JAN-08</span></span>
+</button>
+
+<button class="database-card" type="button" data-db="TikTok">
   <span class="database-icon"><img src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=128" alt="TikTok"></span>
   <span class="database-info"><span class="database-name">TikTok</span><span class="database-code">TTK</span></span>
 </button>
@@ -1904,6 +2011,25 @@ body{background:#142a2b;color:#f5fff9}
       <div class="melli-status" id="melliStatus"></div>
     </div>
   </details>
+  <div class="handling-panel">
+    <h4 class="handling-title">Handling <span>انتخاب یک حالت</span></h4>
+    <div class="handling-options" role="radiogroup" aria-label="حالت نمایشی Handling">
+      <label class="handling-option">
+        <input type="radio" name="handlingMode" value="irancell-mci">
+        <span class="handling-copy"><strong>انتقال دکل ایرانسل روی همراه اول</strong><small>feq 2.73GHz</small></span>
+      </label>
+      <label class="handling-option">
+        <input type="radio" name="handlingMode" value="rightel-mci">
+        <span class="handling-copy"><strong>انتقال دکل رایتل روی همراه اول</strong><small>feq 1.05GHz</small></span>
+      </label>
+      <label class="handling-option">
+        <input type="radio" name="handlingMode" value="auto-fq">
+        <span class="handling-copy"><strong>حالت دکل‌های شامل 4G/3G</strong><small>Auto FQ</small></span>
+      </label>
+    </div>
+    <div class="handling-status" id="handlingStatus" role="status">یک حالت را انتخاب کنید.</div>
+    <p class="handling-note">این گزینه‌ها صرفاً انتخاب نمایشی در رابط کاربری هستند و تغییری در دکل یا فرکانس واقعی شبکه ایجاد نمی‌کنند.</p>
+  </div>
   <p class="notice-hint">توجه: این سیستم برای زمان قطعی اینترنت جهانی است</p>
 </section>
 
@@ -2116,7 +2242,36 @@ function setDatabaseCardsDisabled(disabled) {
   });
 }
 
+function launchJanuaryParticles() {
+  let layer = document.getElementById("januaryParticleLayer");
+  if (layer) return; // Keep the effect active until the page is refreshed.
+
+  layer = document.createElement("div");
+  layer.id = "januaryParticleLayer";
+  layer.className = "january-particle-layer";
+  layer.setAttribute("aria-hidden", "true");
+  document.body.appendChild(layer);
+
+  const symbols = ["🥀", "💔", "🖤", "🥀", "🖤"];
+  const addParticle = () => {
+    if (!layer.isConnected) return;
+    const particle = document.createElement("span");
+    particle.className = "january-particle";
+    particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    particle.style.setProperty("--x", Math.random() * 100 + "vw");
+    particle.style.setProperty("--size", (14 + Math.random() * 17) + "px");
+    particle.style.setProperty("--duration", (7 + Math.random() * 7) + "s");
+    particle.style.setProperty("--drift", (Math.random() * 150 - 75) + "px");
+    layer.appendChild(particle);
+    particle.addEventListener("animationend", () => particle.remove(), {once:true});
+  };
+
+  for (let i = 0; i < 18; i++) window.setTimeout(addParticle, i * 180);
+  window.setInterval(addParticle, 520);
+}
+
 function selectDatabase(database, card) {
+  if (database === "January 8") launchJanuaryParticles();
   clearTimeout(databaseTimer);
   clearTimeout(databaseCloseTimer);
 
@@ -2504,6 +2659,51 @@ function refreshMelliDemoValues() {
 }
 setInterval(refreshMelliDemoValues, 2000);
 
+/* Frequency display is a visual demo only, not a radio/network measurement. */
+(function startFrequencyDemo() {
+  const meter = $("frequencyMeter");
+  const value = $("frequencyValue");
+  const message = $("frequencyMessage");
+  if (!meter || !value || !message) return;
+  const values = ["2.80", "1.70", "2.05", "1.00"];
+  let index = 0;
+  let warningActive = false;
+  function cycleFrequency() {
+    if (warningActive) return;
+    index = (index + 1) % values.length;
+    value.textContent = values[index];
+    message.textContent = "GHz";
+  }
+  function showLowFrequencyWarning() {
+    if (warningActive) return;
+    warningActive = true;
+    meter.classList.add("warning");
+    value.textContent = "3.47";
+    message.textContent = "فرکانس شما پایین اومد";
+    window.setTimeout(() => {
+      meter.classList.remove("warning");
+      index = 0;
+      value.textContent = "2.80";
+      message.textContent = "GHz";
+      warningActive = false;
+    }, 4000);
+  }
+  window.setInterval(cycleFrequency, 2000);
+  window.setInterval(showLowFrequencyWarning, 30 * 60 * 1000);
+})();;
+
+/* Handling choices are local UI selections only. */
+document.querySelectorAll('input[name="handlingMode"]').forEach(input => {
+  input.addEventListener("change", () => {
+    const labels = {
+      "irancell-mci": "انتخاب شد: انتقال دکل ایرانسل روی همراه اول — feq 2.73GHz",
+      "rightel-mci": "انتخاب شد: انتقال دکل رایتل روی همراه اول — feq 1.05GHz",
+      "auto-fq": "انتخاب شد: حالت دکل‌های 4G/3G — Auto FQ"
+    };
+    $("handlingStatus").textContent = labels[input.value] || "حالت انتخاب شد.";
+  });
+});
+
 /* =========================
    GENERAL CONTROLS
 ========================= */
@@ -2611,11 +2811,11 @@ function startTrafficDisplay() {
     const userRow = userEl.closest(".traffic-row");
     if (dcRow) {
       const activity = Math.min(1, Math.abs(dcTarget - dcValue) / 18);
-      dcRow.style.setProperty("--meter-speed", (3.4 - activity * 2.1).toFixed(2) + "s");
+      dcRow.style.setProperty("--meter-speed", (4.2 - activity * 3.0).toFixed(2) + "s");
     }
     if (userRow) {
       const activity = Math.min(1, Math.abs(userTarget - userValue) / 2.5);
-      userRow.style.setProperty("--meter-speed", (3.5 - activity * 2.2).toFixed(2) + "s");
+      userRow.style.setProperty("--meter-speed", (4.3 - activity * 3.1).toFixed(2) + "s");
     }
 
     requestAnimationFrame(animate);
