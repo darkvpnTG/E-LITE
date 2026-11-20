@@ -1592,9 +1592,9 @@ body{background:#142a2b;color:#f5fff9}
       <div class="result-detail"><span class="result-symbol">⌖</span><span class="result-label">لوکیشن</span><strong id="resultLocation">—</strong></div>
       <div class="result-detail"><span class="result-symbol">▤</span><span class="result-label">حجم</span><strong>۱۰۰ گیگابایت</strong></div>
       <div class="result-detail"><span class="result-symbol">◷</span><span class="result-label">اتمام</span><strong>۱۰ روز</strong></div>
-      <div class="result-detail"><span class="result-symbol">⌘</span><span class="result-label">فهرست ساب</span><strong id="resultConfigCount">—</strong></div>
+      <div class="result-detail"><span class="result-symbol">⌘</span><span class="result-label">تعداد کانفیگ</span><strong id="resultConfigCount">—</strong></div>
     </div>
-    <button class="modal-button endpoint-copy-button" id="copySubscriptionBtn" type="button" hidden>کپی ساب</button>
+    <button class="modal-button endpoint-copy-button" id="copySubscriptionBtn" type="button" hidden>کپی کانفیگ‌ها</button>
     <button class="sheet-close" id="closeEndpointSheet" type="button" hidden>بستن</button>
   </div>
 </div>
@@ -1951,7 +1951,7 @@ body{background:#142a2b;color:#f5fff9}
         <option value="">ابتدا دیتابیس انتخاب کنید</option>
       </select>
 
-      <span class="hint">پس از انتخاب کشور، اطلاعات اشتراک و گزینه جستجوی Endpoint نمایش داده می‌شود.</span>
+      <span class="hint">کشورها از فایل conf.txt شناسایی می‌شوند؛ با انتخاب هر کشور، تعداد کانفیگ‌های همان کشور نمایش داده می‌شود.</span>
 
       <div class="subscription-card" id="subscriptionCard" hidden>
         <div class="subscription-head">
@@ -1965,7 +1965,7 @@ body{background:#142a2b;color:#f5fff9}
           <div class="subscription-meta-item"><span>حجم</span><strong>100GB</strong></div>
           <div class="subscription-meta-item"><span>انقضا</span><strong>10 روز</strong></div>
         </div>
-        <button class="btn primary" id="scanEndpointBtn" type="button">جستجو Endpoint</button>
+        <button class="btn primary" id="scanEndpointBtn" type="button">نمایش تعداد کانفیگ</button>
       </div>
     </div>
   </div>
@@ -1977,7 +1977,7 @@ body{background:#142a2b;color:#f5fff9}
   </div>
 
   <div class="status" id="status" role="status">
-    ابتدا یک دیتابیس انتخاب کنید.
+    ابتدا دیتابیس را انتخاب کنید تا فایل conf.txt خوانده شود.
   </div>
 </section>
 
@@ -2062,12 +2062,14 @@ body{background:#142a2b;color:#f5fff9}
 <script>
 "use strict";
 
+// فایل conf.txt باید در ریشه مخزن DARKvpn-MSQP قرار بگیرد.
 const LOCATION_LIST_URL =
-  "https://raw.githubusercontent.com/darkvpnTG/E-LITE3/refs/heads/main/preferIP/listed.txt";
+  "https://raw.githubusercontent.com/darkvpnTG/DARKvpn-MSQP/main/conf.txt";
 
 const $ = id => document.getElementById(id);
 
 let availableCountries = new Set();
+// هر کشور به آرایه‌ای از خطوط اصلی فایل متصل است؛ متن خطوط و Remarks دست‌نخورده می‌ماند.
 let countrySubscriptions = new Map();
 let selectedCountry = "";
 let endpointTimer = null;
@@ -2093,8 +2095,32 @@ const countryNames = {
   LT:"Lithuania", LV:"Latvia", EE:"Estonia", IS:"Iceland",
   ID:"Indonesia", MY:"Malaysia", TH:"Thailand", VN:"Vietnam",
   PH:"Philippines", TW:"Taiwan", AR:"Argentina", CL:"Chile",
-  CO:"Colombia", NZ:"New Zealand"
+  CO:"Colombia", NZ:"New Zealand", RU:"Russia"
 };
+
+const countryNameToCode = {
+  "United Arab Emirates":"AE", "Austria":"AT", "Canada":"CA",
+  "Switzerland":"CH", "Cyprus":"CY", "Czechia":"CZ",
+  "Germany":"DE", "Spain":"ES", "France":"FR",
+  "United Kingdom":"GB", "Hong Kong":"HK", "Italy":"IT",
+  "Japan":"JP", "The Netherlands":"NL", "Netherlands":"NL",
+  "Norway":"NO", "Russia":"RU", "Sweden":"SE",
+  "Singapore":"SG", "Türkiye":"TR", "Turkey":"TR",
+  "United States":"US", "South Africa":"ZA"
+};
+
+function countryCodeFromConfigLine(line) {
+  const hash = line.lastIndexOf("#");
+  if (hash < 0) return "";
+  let remark = line.slice(hash + 1);
+  try { remark = decodeURIComponent(remark); } catch (_) { return ""; }
+  // پرچم ابتدای Remarks را فقط برای تشخیص کشور کنار می‌گذاریم؛ خود خط اصلی تغییر نمی‌کند.
+  remark = remark.trim().replace(/^[\u{1F1E6}-\u{1F1FF}]{2}\s*/u, "");
+  // در Remarks ممکن است نام شهر و استان پیش از نام کشور آمده باشد.
+  const parts = remark.split(",").map(part => part.trim()).filter(Boolean);
+  const country = parts.length ? parts[parts.length - 1] : "";
+  return countryNameToCode[country] || "";
+}
 
 function getCountryName(code) {
   if (countryNames[code]) return countryNames[code];
@@ -2380,58 +2406,40 @@ async function loadLocations() {
   $("refreshBtn").disabled = true;
   $("scanEndpointBtn").disabled = true;
   trigger.disabled = true;
-
   select.disabled = true;
   select.innerHTML = '<option value="">در حال دریافت کشورها...</option>';
-
-  $("countryCurrentName").textContent = "در حال دریافت لوکیشن‌ها...";
+  $("countryCurrentName").textContent = "در حال خواندن فایل کانفیگ‌ها...";
   $("countryCurrentFlag").hidden = true;
   $("subscriptionCard").hidden = true;
-
   menu.replaceChildren();
   closeCountryMenu();
 
   try {
-    const response = await fetch(
-      LOCATION_LIST_URL + "?v=" + Date.now(),
-      {cache:"no-store"}
-    );
-
+    const response = await fetch(LOCATION_LIST_URL + "?v=" + Date.now(), {cache:"no-store"});
     if (!response.ok) throw new Error("HTTP " + response.status);
 
     const raw = await response.text();
-    const subscriptions = new Map();
-
-    raw.split(/\r?\n/).forEach(line => {
-      line = line.replace(/^\uFEFF/, "").trim();
+    const grouped = new Map();
+    raw.split(/\r?\n/).forEach(originalLine => {
+      const line = originalLine.replace(/^\uFEFF/, "").trim();
       if (!line || line.startsWith("#")) return;
-
-      const match = line.match(/^\{\s*([A-Za-z]{2})\s*\}\s+(https?:\/\/\S+)\s*$/);
-      if (!match) return;
-
-      let code = match[1].toUpperCase();
-      if (code === "UK") code = "GB";
-
-      try {
-        const parsedUrl = new URL(match[2]);
-        if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") return;
-        subscriptions.set(code, match[2]);
-      } catch (_) {
-        return;
-      }
+      const code = countryCodeFromConfigLine(line);
+      if (!code) return;
+      if (!grouped.has(code)) grouped.set(code, []);
+      grouped.get(code).push(line);
     });
 
-    countrySubscriptions = subscriptions;
-    availableCountries = new Set(subscriptions.keys());
-    const sortedCountries = [...availableCountries].sort();
-
+    countrySubscriptions = grouped;
+    availableCountries = new Set(grouped.keys());
+    const sortedCountries = [...availableCountries].sort((a,b) => getCountryName(a).localeCompare(getCountryName(b), "en"));
     select.replaceChildren();
     menu.replaceChildren();
 
     sortedCountries.forEach(code => {
+      const configs = countrySubscriptions.get(code) || [];
       const option = document.createElement("option");
       option.value = code;
-      option.textContent = getCountryName(code);
+      option.textContent = getCountryName(code) + " (" + configs.length + ")";
       select.appendChild(option);
 
       const item = document.createElement("button");
@@ -2443,22 +2451,17 @@ async function loadLocations() {
 
       const flagFrame = document.createElement("span");
       flagFrame.className = "country-flag";
-
       const flag = document.createElement("img");
       flag.className = "country-flag-img";
       flag.src = "https://flagcdn.com/w80/" + code.toLowerCase() + ".png";
       flag.alt = code + " flag";
       flag.loading = "lazy";
-      flag.onerror = () => {
-        flag.style.display = "none";
-        flagFrame.textContent = getCountryFlag(code);
-      };
+      flag.onerror = () => { flag.style.display = "none"; flagFrame.textContent = getCountryFlag(code); };
       flagFrame.appendChild(flag);
 
       const name = document.createElement("span");
       name.className = "country-option-name";
-      name.textContent = getCountryName(code);
-
+      name.textContent = getCountryName(code) + "  ·  " + configs.length + " کانفیگ";
       item.append(flagFrame, name);
       item.addEventListener("click", () => selectCountry(code));
       menu.appendChild(item);
@@ -2469,27 +2472,24 @@ async function loadLocations() {
 
     if (sortedCountries.length) {
       selectCountry(sortedCountries[0], false);
-      menu.hidden = false;
-      trigger.setAttribute("aria-expanded", "true");
       activateDashboardTab("location");
-      setStatus("کشورها و لینک‌های اشتراک دریافت شدند: " + sortedCountries.length + " کشور.");
+      const total = [...grouped.values()].reduce((sum, list) => sum + list.length, 0);
+      setStatus("" + sortedCountries.length + " کشور و " + total + " کانفیگ از فایل conf.txt شناسایی شد.");
     } else {
       select.innerHTML = '<option value="">کشوری پیدا نشد</option>';
       $("countryCurrentName").textContent = "کشوری پیدا نشد";
-      setStatus("هیچ خط معتبر شامل کد کشور و لینک در فایل ip.txt پیدا نشد.", true);
+      setStatus("هیچ کانفیگ دارای نام کشور قابل‌شناسایی در conf.txt پیدا نشد.", true);
     }
-
   } catch (error) {
     availableCountries.clear();
     countrySubscriptions.clear();
-    select.innerHTML = '<option value="">خطا در دریافت کشورها</option>';
+    select.innerHTML = '<option value="">خطا در دریافت فایل</option>';
     select.disabled = true;
     trigger.disabled = true;
     menu.replaceChildren();
-    $("countryCurrentName").textContent = "خطا در دریافت لوکیشن";
+    $("countryCurrentName").textContent = "خطا در دریافت فایل کانفیگ";
     $("subscriptionCard").hidden = true;
-    setStatus("دریافت کشورها ناموفق بود: " + error.message, true);
-
+    setStatus("دریافت conf.txt ناموفق بود: " + error.message, true);
   } finally {
     $("refreshBtn").disabled = false;
   }
@@ -2531,10 +2531,11 @@ function selectCountry(code, autoScan = true) {
   $("subscriptionCard").hidden = false;
   $("subscriptionFlag").src = "https://flagcdn.com/w80/" + code.toLowerCase() + ".png";
   $("subscriptionFlag").alt = code + " flag";
+  const configCount = (countrySubscriptions.get(code) || []).length;
   $("subscriptionCountryName").textContent =
-    getCountryFlag(code) + "  " + getCountryName(code) + " (" + code + ")";
+    getCountryFlag(code) + "  " + getCountryName(code) + " (" + code + ") — " + configCount + " کانفیگ";
 
-  setStatus("لوکیشن انتخاب شد: " + getCountryName(code) + " — جستجوی Endpoint آغاز شد.");
+  setStatus("لوکیشن " + getCountryName(code) + " انتخاب شد؛ " + configCount + " کانفیگ در فایل پیدا شد.");
   closeCountryMenu();
   if(autoScan) startEndpointScan();
 }
@@ -2569,17 +2570,17 @@ function startEndpointScan() {
   $("resultDetails").hidden = true;
   $("closeEndpointSheet").hidden = true;
   $("copySubscriptionBtn").hidden = true;
-  $("copySubscriptionBtn").textContent = "کپی ساب";
+  $("copySubscriptionBtn").textContent = "کپی کانفیگ‌ها";
   $("endpointModal").classList.remove("hidden");
 
   endpointTimer = setTimeout(() => {
-    displayedEndpointCount = Math.floor(Math.random() * 150) + 1;
+    displayedEndpointCount = (countrySubscriptions.get(selectedCountry) || []).length;
 
     $("endpointModalIcon").className = "apn-success";
     $("endpointModalIcon").textContent = "✓";
     $("endpointModalTitle").textContent = "جستجو با موفقیت انجام شد";
     $("endpointModalMessage").textContent =
-      "تعداد " + displayedEndpointCount + " Endpoint برای شما پیدا شد.";
+      "تعداد " + displayedEndpointCount + " کانفیگ برای این کشور در فایل conf.txt پیدا شد.";
     $("endpointCount").textContent = displayedEndpointCount;
     $("endpointCount").hidden = false;
     $("resultLocation").textContent = getCountryName(selectedCountry) + " " + getCountryFlag(selectedCountry);
@@ -2592,18 +2593,19 @@ function startEndpointScan() {
 }
 
 async function copySelectedSubscription() {
-  const subscriptionUrl = countrySubscriptions.get(selectedCountry);
-  if (!subscriptionUrl) {
-    setStatus("لینک اشتراک این لوکیشن در فایل ip.txt پیدا نشد.", true);
+  const configs = countrySubscriptions.get(selectedCountry) || [];
+  if (!configs.length) {
+    setStatus("برای این کشور کانفیگی در conf.txt پیدا نشد.", true);
     return;
   }
 
+  const textToCopy = configs.join("\n");
   try {
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(subscriptionUrl);
+      await navigator.clipboard.writeText(textToCopy);
     } else {
       const temp = document.createElement("textarea");
-      temp.value = subscriptionUrl;
+      temp.value = textToCopy;
       temp.setAttribute("readonly", "");
       temp.style.position = "fixed";
       temp.style.opacity = "0";
@@ -2616,9 +2618,9 @@ async function copySelectedSubscription() {
 
     $("copySubscriptionBtn").textContent = "کپی شد ✓";
     setTimeout(()=>closeAnimatedSheet("endpointModal"),1100);
-    setStatus("لینک اشتراک " + getCountryName(selectedCountry) + " در کلیپ‌بورد کپی شد.");
+    setStatus("" + configs.length + " کانفیگ " + getCountryName(selectedCountry) + " کپی شد؛ Remarks بدون تغییر باقی ماند.");
   } catch (error) {
-    setStatus("کپی لینک انجام نشد: " + error.message, true);
+    setStatus("کپی کانفیگ‌ها انجام نشد: " + error.message, true);
   }
 }
 
