@@ -1951,7 +1951,7 @@ body{background:#142a2b;color:#f5fff9}
         <option value="">ابتدا دیتابیس انتخاب کنید</option>
       </select>
 
-      <span class="hint">کشورها از فایل conf.txt شناسایی می‌شوند؛ با انتخاب هر کشور، تعداد کانفیگ‌های همان کشور نمایش داده می‌شود.</span>
+      <span class="hint">کشورها و لوکیشن‌ها مستقیماً از فایل conf.txt شناسایی می‌شوند.</span>
 
       <div class="subscription-card" id="subscriptionCard" hidden>
         <div class="subscription-head">
@@ -2064,7 +2064,7 @@ body{background:#142a2b;color:#f5fff9}
 
 // فایل conf.txt باید در ریشه مخزن DARKvpn-MSQP قرار بگیرد.
 const LOCATION_LIST_URL =
-  "https://raw.githubusercontent.com/darkvpnTG/E-LITE/refs/heads/main/conf.txt";
+  "https://raw.githubusercontent.com/darkvpnTG/DARKvpn-MSQP/main/conf.txt";
 
 const $ = id => document.getElementById(id);
 
@@ -2439,7 +2439,7 @@ async function loadLocations() {
       const configs = countrySubscriptions.get(code) || [];
       const option = document.createElement("option");
       option.value = code;
-      option.textContent = getCountryName(code) + " (" + configs.length + ")";
+      option.textContent = getCountryName(code);
       select.appendChild(option);
 
       const item = document.createElement("button");
@@ -2461,7 +2461,7 @@ async function loadLocations() {
 
       const name = document.createElement("span");
       name.className = "country-option-name";
-      name.textContent = getCountryName(code) + "  ·  " + configs.length + " کانفیگ";
+      name.textContent = getCountryName(code);
       item.append(flagFrame, name);
       item.addEventListener("click", () => selectCountry(code));
       menu.appendChild(item);
@@ -2473,8 +2473,7 @@ async function loadLocations() {
     if (sortedCountries.length) {
       selectCountry(sortedCountries[0], false);
       activateDashboardTab("location");
-      const total = [...grouped.values()].reduce((sum, list) => sum + list.length, 0);
-      setStatus("" + sortedCountries.length + " کشور و " + total + " کانفیگ از فایل conf.txt شناسایی شد.");
+      setStatus("" + sortedCountries.length + " کشور از فایل conf.txt شناسایی شد.");
     } else {
       select.innerHTML = '<option value="">کشوری پیدا نشد</option>';
       $("countryCurrentName").textContent = "کشوری پیدا نشد";
@@ -2531,11 +2530,10 @@ function selectCountry(code, autoScan = true) {
   $("subscriptionCard").hidden = false;
   $("subscriptionFlag").src = "https://flagcdn.com/w80/" + code.toLowerCase() + ".png";
   $("subscriptionFlag").alt = code + " flag";
-  const configCount = (countrySubscriptions.get(code) || []).length;
   $("subscriptionCountryName").textContent =
-    getCountryFlag(code) + "  " + getCountryName(code) + " (" + code + ") — " + configCount + " کانفیگ";
+    getCountryFlag(code) + "  " + getCountryName(code) + " (" + code + ")";
 
-  setStatus("لوکیشن " + getCountryName(code) + " انتخاب شد؛ " + configCount + " کانفیگ در فایل پیدا شد.");
+  setStatus("لوکیشن " + getCountryName(code) + " انتخاب شد.");
   closeCountryMenu();
   if(autoScan) startEndpointScan();
 }
@@ -2574,17 +2572,18 @@ function startEndpointScan() {
   $("endpointModal").classList.remove("hidden");
 
   endpointTimer = setTimeout(() => {
-    displayedEndpointCount = (countrySubscriptions.get(selectedCountry) || []).length;
+    const actualConfigCount = (countrySubscriptions.get(selectedCountry) || []).length;
+    displayedEndpointCount = actualConfigCount;
 
     $("endpointModalIcon").className = "apn-success";
     $("endpointModalIcon").textContent = "✓";
     $("endpointModalTitle").textContent = "جستجو با موفقیت انجام شد";
     $("endpointModalMessage").textContent =
-      "تعداد " + displayedEndpointCount + " کانفیگ برای این کشور در فایل conf.txt پیدا شد.";
-    $("endpointCount").textContent = displayedEndpointCount;
+      "تعداد واقعی " + actualConfigCount + " کانفیگ برای این کشور در فایل conf.txt پیدا شد.";
+    $("endpointCount").textContent = actualConfigCount;
     $("endpointCount").hidden = false;
     $("resultLocation").textContent = getCountryName(selectedCountry) + " " + getCountryFlag(selectedCountry);
-    $("resultConfigCount").textContent = displayedEndpointCount + " کانفیگ";
+    $("resultConfigCount").textContent = actualConfigCount + " کانفیگ";
     $("resultDetails").hidden = false;
     $("copySubscriptionBtn").hidden = false;
     $("closeEndpointSheet").hidden = false;
