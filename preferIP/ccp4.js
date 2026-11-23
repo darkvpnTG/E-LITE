@@ -7,8 +7,8 @@
 {hk} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=HK#DarkvpnTG🧑‍💻
 {jp} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=JP#DarkvpnTG🧑‍💻
 {nl} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=NL#DarkvpnTG🧑‍💻
+{ru} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=RU#DarkvpnTG🧑‍💻
 {se} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=SE#DarkvpnTG🧑‍💻
 {sg} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=SG#DarkvpnTG🧑‍💻
 {tr} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=TR#DarkvpnTG🧑‍💻
-{ru} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=RU#DarkvpnTG🧑‍💻
 {us} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=US#DarkvpnTG🧑‍💻
