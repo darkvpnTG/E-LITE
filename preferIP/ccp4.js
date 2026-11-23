@@ -1,5 +1,5 @@
-{ch} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=CH#DarkvpnTG🧑‍💻
 {be} https://
+{ch} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=CH#DarkvpnTG🧑‍💻
 {de} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=DE#DarkvpnTG🧑‍💻
 {fi} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=FI#DarkvpnTG🧑‍💻
 {fr} https://z3m-pp.zoe-lewis40481.workers.dev/sync?sub=FR#DarkvpnTG🧑‍💻
