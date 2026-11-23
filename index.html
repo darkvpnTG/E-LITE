@@ -2107,9 +2107,7 @@ body{background:#142a2b;color:#f5fff9}
 "use strict";
 
 const LOCATION_LIST_URL =
-  "https://raw.githubusercontent.com/darkvpnTG/E-LITE/refs/heads/main/preferIP/ccp4.js";
-const COUNTRY_CONFIG_BASE_URL =
-  "https://raw.githubusercontent.com/darkvpnTG/E-LITE/refs/heads/main/EPN/";
+  "https://api.github.com/repos/darkvpnTG/E-LITE/contents/EPN?ref=main";
 
 const $ = id => document.getElementById(id);
 
@@ -2466,32 +2464,27 @@ async function loadLocations() {
 
   try {
     const response = await fetch(
-      LOCATION_LIST_URL + "?v=" + Date.now(),
-      {cache:"no-store"}
+      LOCATION_LIST_URL,
+      {cache:"no-store", headers:{Accept:"application/vnd.github+json"}}
     );
 
-    if (!response.ok) throw new Error("HTTP " + response.status);
+    if (!response.ok) throw new Error("GitHub API HTTP " + response.status);
 
-    const raw = await response.text();
+    const files = await response.json();
+    if (!Array.isArray(files)) throw new Error("ساختار پاسخ پوشه EPN معتبر نیست.");
+
     const subscriptions = new Map();
 
-    raw.split(/\r?\n/).forEach(line => {
-      line = line.replace(/^\uFEFF/, "").trim();
-      if (!line || line.startsWith("#")) return;
+    files.forEach(file => {
+      if (!file || file.type !== "file" || typeof file.name !== "string") return;
 
-      const match = line.match(/^\{\s*([A-Za-z]{2})\s*\}\s+(https?:\/\/\S+)\s*$/);
-      if (!match) return;
+      const match = file.name.match(/^([a-z]{2})\.js$/i);
+      if (!match || !file.download_url) return;
 
       let code = match[1].toUpperCase();
       if (code === "UK") code = "GB";
 
-      try {
-        const parsedUrl = new URL(match[2]);
-        if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") return;
-        subscriptions.set(code, match[2]);
-      } catch (_) {
-        return;
-      }
+      subscriptions.set(code, file.download_url);
     });
 
     countrySubscriptions = subscriptions;
@@ -2549,7 +2542,7 @@ async function loadLocations() {
     } else {
       select.innerHTML = '<option value="">کشوری پیدا نشد</option>';
       $("countryCurrentName").textContent = "کشوری پیدا نشد";
-      setStatus("هیچ خط معتبر شامل کد کشور و لینک در فایل ip.txt پیدا نشد.", true);
+      setStatus("هیچ فایل کشوری با نام دوحرفی مثل de.js یا fr.js داخل پوشه EPN پیدا نشد.", true);
     }
 
   } catch (error) {
@@ -2646,9 +2639,11 @@ async function startEndpointScan() {
   $("endpointModal").classList.remove("hidden");
 
   try {
+    const configUrl = countrySubscriptions.get(selectedCountry);
+    if (!configUrl) throw new Error("آدرس فایل این کشور در پوشه EPN پیدا نشد.");
     const countryFile = selectedCountry.toLowerCase() + ".js";
-    const response = await fetch(COUNTRY_CONFIG_BASE_URL + countryFile + "?v=" + Date.now(), {cache:"no-store"});
-    if (!response.ok) throw new Error("فایل " + countryFile + " در ریشه مخزن E-LITE3 پیدا نشد (HTTP " + response.status + ").");
+    const response = await fetch(configUrl + "?v=" + Date.now(), {cache:"no-store"});
+    if (!response.ok) throw new Error("دریافت فایل " + countryFile + " از پوشه EPN ناموفق بود (HTTP " + response.status + ").");
 
     const raw = (await response.text()).replace(/^\uFEFF/, "");
     const configs = raw.split(/\r?\n/).map(line => line.trim()).filter(line => /^vless:\/\//i.test(line));
