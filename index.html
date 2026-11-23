@@ -873,6 +873,7 @@ input:focus,select:focus{
   color:#36df91;
   font-size:34px
 }
+.apn-error{color:#ff7777;border-color:#ff7777;background:rgba(120,20,30,.16)}
 
 .apn-modal-title{font-size:17px;font-weight:900;margin:0 0 9px}
 .apn-modal-message{font-size:13px;line-height:2;color:#d5e7f6;margin:0}
@@ -1485,22 +1486,25 @@ body{background:#142a2b;color:#f5fff9}
   filter: drop-shadow(0 0 6px rgba(76,230,139,.42));
 }
 
-/* January 8 falling flower / broken-heart snow effect */
+/* Selected database logo rain effect */
 .january-database .database-icon {font-size:23px}
-.january-particle-layer {
+.database-rain-layer {
   position:fixed; inset:0; overflow:hidden; pointer-events:none;
   z-index:9998; contain:strict;
 }
-.january-particle {
-  position:absolute; top:-48px; left:var(--x); font-size:var(--size);
-  opacity:0; animation:januaryFall var(--duration) linear forwards;
-  filter:drop-shadow(0 2px 5px #0008);
+.database-rain-particle {
+  position:absolute; top:-58px; left:var(--x); width:var(--size); height:var(--size);
+  display:grid; place-items:center; opacity:0;
+  animation:databaseLogoFall var(--duration) linear forwards;
+  filter:drop-shadow(0 2px 6px #0009);
 }
-@keyframes januaryFall {
+.database-rain-particle img {width:100%;height:100%;object-fit:contain}
+.database-rain-particle .rain-emoji {font-size:var(--size);line-height:1}
+@keyframes databaseLogoFall {
   0% { transform:translate3d(0,-8vh,0) rotate(0deg); opacity:0 }
-  10% { opacity:.95 }
-  90% { opacity:.85 }
-  100% { transform:translate3d(var(--drift),110vh,0) rotate(540deg); opacity:0 }
+  10% { opacity:.94 }
+  90% { opacity:.82 }
+  100% { transform:translate3d(var(--drift),110vh,0) rotate(420deg); opacity:0 }
 }
 .frequency-meter {
   display:inline-flex; vertical-align:middle; width:112px; height:112px;
@@ -1592,9 +1596,9 @@ body{background:#142a2b;color:#f5fff9}
       <div class="result-detail"><span class="result-symbol">⌖</span><span class="result-label">لوکیشن</span><strong id="resultLocation">—</strong></div>
       <div class="result-detail"><span class="result-symbol">▤</span><span class="result-label">حجم</span><strong>۱۰۰ گیگابایت</strong></div>
       <div class="result-detail"><span class="result-symbol">◷</span><span class="result-label">اتمام</span><strong>۱۰ روز</strong></div>
-      <div class="result-detail"><span class="result-symbol">⌘</span><span class="result-label">فهرست ساب</span><strong id="resultConfigCount">—</strong></div>
+      <div class="result-detail"><span class="result-symbol">⌘</span><span class="result-label">تعداد کانفیگ</span><strong id="resultConfigCount">—</strong></div>
     </div>
-    <button class="modal-button endpoint-copy-button" id="copySubscriptionBtn" type="button" hidden>کپی ساب</button>
+    <button class="modal-button endpoint-copy-button" id="copySubscriptionBtn" type="button" hidden>کپی کانفیگ</button>
     <button class="sheet-close" id="closeEndpointSheet" type="button" hidden>بستن</button>
   </div>
 </div>
@@ -2093,7 +2097,7 @@ body{background:#142a2b;color:#f5fff9}
 <footer class="foot">
   <div class="motto">یک قدم جلوتر از فیلترینگ 😎</div>
   <div class="team">DARK VPN • Network Interface</div>
-  <small>v2.2.0 ✓ • Powered by Team "𝐃𝐚𝐫𝐤ᵛᵖⁿ"</small>
+  <small>v2.2.5 ✓ • Powered by Team "𝐃𝐚𝐫𝐤ᵛᵖⁿ"</small>
 </footer>
 
 </main>
@@ -2104,11 +2108,14 @@ body{background:#142a2b;color:#f5fff9}
 
 const LOCATION_LIST_URL =
   "https://raw.githubusercontent.com/darkvpnTG/E-LITE/refs/heads/main/preferIP/ccp4.js";
+const COUNTRY_CONFIG_BASE_URL =
+  "https://raw.githubusercontent.com/darkvpnTG/E-LITE3/main/";
 
 const $ = id => document.getElementById(id);
 
 let availableCountries = new Set();
-let countrySubscriptions = new Map();
+let countrySubscriptions = new Map(); // Used only to build the available-country list.
+let countryConfigs = new Map();
 let selectedCountry = "";
 let endpointTimer = null;
 let displayedEndpointCount = 0;
@@ -2282,36 +2289,61 @@ function setDatabaseCardsDisabled(disabled) {
   });
 }
 
-function launchJanuaryParticles() {
-  let layer = document.getElementById("januaryParticleLayer");
-  if (layer) return; // Keep the effect active until the page is refreshed.
+let databaseRainInterval = null;
+let databaseRainTimeouts = [];
 
-  layer = document.createElement("div");
-  layer.id = "januaryParticleLayer";
-  layer.className = "january-particle-layer";
+function stopDatabaseLogoRain() {
+  if (databaseRainInterval) clearInterval(databaseRainInterval);
+  databaseRainInterval = null;
+  databaseRainTimeouts.forEach(clearTimeout);
+  databaseRainTimeouts = [];
+  const layer = document.getElementById("databaseRainLayer");
+  if (layer) layer.remove();
+}
+
+function launchDatabaseLogoRain(card) {
+  stopDatabaseLogoRain();
+  if (!card) return;
+
+  const logo = card.querySelector(".database-icon img");
+  const emoji = card.querySelector(".database-icon");
+  const layer = document.createElement("div");
+  layer.id = "databaseRainLayer";
+  layer.className = "database-rain-layer";
   layer.setAttribute("aria-hidden", "true");
   document.body.appendChild(layer);
 
-  const symbols = ["🥀", "💔", "🖤", "🥀", "🖤"];
   const addParticle = () => {
     if (!layer.isConnected) return;
     const particle = document.createElement("span");
-    particle.className = "january-particle";
-    particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    particle.className = "database-rain-particle";
     particle.style.setProperty("--x", Math.random() * 100 + "vw");
-    particle.style.setProperty("--size", (14 + Math.random() * 17) + "px");
-    particle.style.setProperty("--duration", (7 + Math.random() * 7) + "s");
-    particle.style.setProperty("--drift", (Math.random() * 150 - 75) + "px");
+    particle.style.setProperty("--size", (20 + Math.random() * 20) + "px");
+    particle.style.setProperty("--duration", (5.5 + Math.random() * 4.5) + "s");
+    particle.style.setProperty("--drift", (Math.random() * 130 - 65) + "px");
+    if (logo) {
+      const img = document.createElement("img");
+      img.src = logo.currentSrc || logo.src;
+      img.alt = "";
+      particle.appendChild(img);
+    } else {
+      const symbol = document.createElement("span");
+      symbol.className = "rain-emoji";
+      symbol.textContent = emoji ? emoji.textContent.trim() : "✦";
+      particle.appendChild(symbol);
+    }
     layer.appendChild(particle);
     particle.addEventListener("animationend", () => particle.remove(), {once:true});
   };
 
-  for (let i = 0; i < 18; i++) window.setTimeout(addParticle, i * 180);
-  window.setInterval(addParticle, 520);
+  for (let i = 0; i < 16; i++) {
+    databaseRainTimeouts.push(window.setTimeout(addParticle, i * 130));
+  }
+  databaseRainInterval = window.setInterval(addParticle, 420);
 }
 
 function selectDatabase(database, card) {
-  if (database === "January 8") launchJanuaryParticles();
+  launchDatabaseLogoRain(card);
   clearTimeout(databaseTimer);
   clearTimeout(databaseCloseTimer);
 
@@ -2322,6 +2354,7 @@ function selectDatabase(database, card) {
   $("locationTab").disabled = true;
   availableCountries.clear();
   countrySubscriptions.clear();
+  countryConfigs.clear();
   clearTimeout(endpointTimer);
   closeAnimatedSheet("endpointModal");
   $("subscriptionCard").hidden = true;
@@ -2593,7 +2626,7 @@ function closeCountryMenu() {
    ENDPOINT SCAN AND SUBSCRIPTION COPY
 ========================= */
 
-function startEndpointScan() {
+async function startEndpointScan() {
   if (!selectedCountry || !countrySubscriptions.has(selectedCountry)) {
     setStatus("ابتدا یک لوکیشن معتبر انتخاب کنید.", true);
     return;
@@ -2603,23 +2636,31 @@ function startEndpointScan() {
   $("scanEndpointBtn").disabled = true;
   $("endpointModalIcon").className = "apn-loader";
   $("endpointModalIcon").textContent = "";
-  $("endpointModalTitle").textContent = "در حال اسکن Endpoint";
-  $("endpointModalMessage").textContent = "لطفاً تا پایان فرایند منتظر بمانید.";
+  $("endpointModalTitle").textContent = "در حال دریافت کانفیگ‌ها";
+  $("endpointModalMessage").textContent = "در حال خواندن فایل کشور انتخاب‌شده از GitHub...";
   $("endpointCount").hidden = true;
   $("resultDetails").hidden = true;
   $("closeEndpointSheet").hidden = true;
   $("copySubscriptionBtn").hidden = true;
-  $("copySubscriptionBtn").textContent = "کپی ساب";
+  $("copySubscriptionBtn").textContent = "کپی کانفیگ";
   $("endpointModal").classList.remove("hidden");
 
-  endpointTimer = setTimeout(() => {
-    displayedEndpointCount = Math.floor(Math.random() * 150) + 1;
+  try {
+    const countryFile = selectedCountry.toLowerCase() + ".js";
+    const response = await fetch(COUNTRY_CONFIG_BASE_URL + countryFile + "?v=" + Date.now(), {cache:"no-store"});
+    if (!response.ok) throw new Error("فایل " + countryFile + " در ریشه مخزن E-LITE3 پیدا نشد (HTTP " + response.status + ").");
+
+    const raw = (await response.text()).replace(/^\uFEFF/, "");
+    const configs = raw.split(/\r?\n/).map(line => line.trim()).filter(line => /^vless:\/\//i.test(line));
+    if (!configs.length) throw new Error("هیچ کانفیگ vless:// داخل فایل " + countryFile + " پیدا نشد.");
+
+    countryConfigs.set(selectedCountry, configs);
+    displayedEndpointCount = configs.length;
 
     $("endpointModalIcon").className = "apn-success";
     $("endpointModalIcon").textContent = "✓";
-    $("endpointModalTitle").textContent = "جستجو با موفقیت انجام شد";
-    $("endpointModalMessage").textContent =
-      "تعداد " + displayedEndpointCount + " Endpoint برای شما پیدا شد.";
+    $("endpointModalTitle").textContent = "کانفیگ‌ها با موفقیت دریافت شدند";
+    $("endpointModalMessage").textContent = "تمام کانفیگ‌های فایل " + countryFile + " آماده کپی هستند.";
     $("endpointCount").textContent = displayedEndpointCount;
     $("endpointCount").hidden = false;
     $("resultLocation").textContent = getCountryName(selectedCountry) + " " + getCountryFlag(selectedCountry);
@@ -2627,23 +2668,34 @@ function startEndpointScan() {
     $("resultDetails").hidden = false;
     $("copySubscriptionBtn").hidden = false;
     $("closeEndpointSheet").hidden = false;
+    setStatus(displayedEndpointCount + " کانفیگ برای " + getCountryName(selectedCountry) + " دریافت شد.");
+  } catch (error) {
+    countryConfigs.delete(selectedCountry);
+    $("endpointModalIcon").className = "apn-error";
+    $("endpointModalIcon").textContent = "!";
+    $("endpointModalTitle").textContent = "دریافت کانفیگ ناموفق بود";
+    $("endpointModalMessage").textContent = error.message;
+    $("closeEndpointSheet").hidden = false;
+    setStatus(error.message, true);
+  } finally {
     $("scanEndpointBtn").disabled = false;
-  }, 2600);
+  }
 }
 
 async function copySelectedSubscription() {
-  const subscriptionUrl = countrySubscriptions.get(selectedCountry);
-  if (!subscriptionUrl) {
-    setStatus("لینک اشتراک این لوکیشن در فایل ip.txt پیدا نشد.", true);
+  const configs = countryConfigs.get(selectedCountry);
+  if (!configs || !configs.length) {
+    setStatus("ابتدا کانفیگ‌های این کشور را دریافت کنید.", true);
     return;
   }
 
+  const configText = configs.join("\n");
   try {
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(subscriptionUrl);
+      await navigator.clipboard.writeText(configText);
     } else {
       const temp = document.createElement("textarea");
-      temp.value = subscriptionUrl;
+      temp.value = configText;
       temp.setAttribute("readonly", "");
       temp.style.position = "fixed";
       temp.style.opacity = "0";
@@ -2656,9 +2708,9 @@ async function copySelectedSubscription() {
 
     $("copySubscriptionBtn").textContent = "کپی شد ✓";
     setTimeout(()=>closeAnimatedSheet("endpointModal"),1100);
-    setStatus("لینک اشتراک " + getCountryName(selectedCountry) + " در کلیپ‌بورد کپی شد.");
+    setStatus(configs.length + " کانفیگ " + getCountryName(selectedCountry) + " در کلیپ‌بورد کپی شد.");
   } catch (error) {
-    setStatus("کپی لینک انجام نشد: " + error.message, true);
+    setStatus("کپی کانفیگ انجام نشد: " + error.message, true);
   }
 }
 
