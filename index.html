@@ -2131,27 +2131,27 @@ let databaseTimer = null;
 let databaseCloseTimer = null;
 
 const countryNames = {
-  CA:"Canada", US:"United States", DE:"Germany", FR:"France",
-  GB:"United Kingdom", UK:"United Kingdom", NL:"Netherlands",
-  BE:"Belgium", AT:"Austria", AU:"Australia", CH:"Switzerland",
-  ES:"Spain", FI:"Finland", IN:"India", IT:"Italy", JP:"Japan",
-  PL:"Poland", RO:"Romania", AE:"United Arab Emirates", TR:"Turkey",
-  RS:"Serbia", UA:"Ukraine", IL:"Israel", KR:"South Korea",
-  SE:"Sweden", HK:"Hong Kong", SG:"Singapore", BR:"Brazil",
-  MX:"Mexico", ZA:"South Africa", CZ:"Czechia", NO:"Norway",
-  DK:"Denmark", IE:"Ireland", PT:"Portugal", GR:"Greece",
-  BG:"Bulgaria", HR:"Croatia", CY:"Cyprus", LU:"Luxembourg",
-  LT:"Lithuania", LV:"Latvia", EE:"Estonia", IS:"Iceland",
-  ID:"Indonesia", MY:"Malaysia", TH:"Thailand", VN:"Vietnam",
-  PH:"Philippines", TW:"Taiwan", AR:"Argentina", CL:"Chile",
-  CO:"Colombia", NZ:"New Zealand"
+  CA:"کانادا", US:"ایالات متحده", DE:"آلمان", FR:"فرانسه",
+  GB:"بریتانیا", UK:"بریتانیا", NL:"هلند",
+  BE:"بلژیک", AT:"اتریش", AU:"استرالیا", CH:"سوئیس",
+  ES:"اسپانیا", FI:"فنلاند", IN:"هند", IT:"ایتالیا", JP:"ژاپن",
+  PL:"لهستان", RO:"رومانی", AE:"امارات متحده عربی", TR:"ترکیه",
+  RS:"صربستان", UA:"اوکراین", IL:"اسرائیل", KR:"کره جنوبی",
+  SE:"سوئد", HK:"هنگ‌کنگ", SG:"سنگاپور", BR:"برزیل",
+  MX:"مکزیک", ZA:"آفریقای جنوبی", CZ:"چک", NO:"نروژ",
+  DK:"دانمارک", IE:"ایرلند", PT:"پرتغال", GR:"یونان",
+  BG:"بلغارستان", HR:"کرواسی", CY:"قبرس", LU:"لوکزامبورگ",
+  LT:"لیتوانی", LV:"لتونی", EE:"استونی", IS:"ایسلند",
+  ID:"اندونزی", MY:"مالزی", TH:"تایلند", VN:"ویتنام",
+  PH:"فیلیپین", TW:"تایوان", AR:"آرژانتین", CL:"شیلی",
+  CO:"کلمبیا", NZ:"نیوزیلند"
 };
 
 function getCountryName(code) {
   if (countryNames[code]) return countryNames[code];
 
   try {
-    return new Intl.DisplayNames(["en"], {type:"region"}).of(code) || code;
+    return new Intl.DisplayNames(["fa"], {type:"region"}).of(code) || code;
   } catch (_) {
     return code;
   }
