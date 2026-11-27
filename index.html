@@ -2741,13 +2741,13 @@ async function startEndpointScan() {
     // Numbering starts at 1 for every country and follows that country's config order.
     const countryFlag = getCountryFlag(selectedCountry);
     const serviceLabels = {
-      "Tor": "Tor",
-      "SSH": "SSH",
-      "SSTP": "SSTP",
-      "ARGO VPN": "Argo",
-      "PSIPHON": "Psiphon",
-      "AMNEZIA VPN": "Amnezia",
-      "Hotspot VPN": "Hotspot Shield"
+      "Tor": "Tor Service",
+      "SSH": "SSH Service",
+      "SSTP": "SSTP Service",
+      "ARGO VPN": "Argo Service",
+      "PSIPHON": "Psiphon Service",
+      "AMNEZIA VPN": "Amnezia Service",
+      "Hotspot VPN": "Hotspot Service"
     };
     const serviceLabel = serviceLabels[selectedEngine] || selectedEngine;
     const configs = sourceConfigs.map((config, index) => {
