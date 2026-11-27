@@ -545,6 +545,7 @@ input:focus,select:focus{
 .engine-card:hover{border-color:#70d8ff88;background:#6c61a522}
 .engine-card.selected{border-color:#a99aff;background:linear-gradient(145deg,#7869bf55,#526caa45);box-shadow:0 0 0 2px #a99aff20}
 .engine-icon{width:38px;height:38px;min-width:38px;display:grid;place-items:center;border-radius:10px;background:#ffffff12;border:1px solid #ffffff18;overflow:hidden;font-size:21px}
+.hotspot-engine-icon{display:grid;place-items:center;color:#70e7ff}.hotspot-engine-icon svg{width:30px;height:30px;display:block}
 .engine-icon img{width:27px;height:27px;object-fit:contain}
 .engine-name{flex:1;font-size:12px;font-weight:800}
 .engine-code{font-size:9px;color:#9deaff;direction:ltr;border:1px solid #56d6ff30;border-radius:7px;padding:4px 7px}
@@ -685,8 +686,8 @@ input:focus,select:focus{
 .subscription-meta-item span{display:block;font-size:10px;color:#a9bfd5;margin-bottom:4px}
 .subscription-meta-item strong{font-size:13px;color:#dff7ff}
 .subscription-card .btn{width:100%}
-.endpoint-count{font-size:34px;font-weight:900;color:#9deaff;line-height:1.4;margin:7px 0}
-.endpoint-copy-button{margin-top:17px}
+.سرور-count{font-size:34px;font-weight:900;color:#9deaff;line-height:1.4;margin:7px 0}
+.سرور-copy-button{margin-top:17px}
 
 .location-native{
   position:absolute!important;
@@ -1040,7 +1041,7 @@ body{background:#101020;color:#f4f2ff}
 .btn.primary,.modal-button{background:linear-gradient(100deg,#9b87ff,#70cfff);color:#111124}
 .theme{border-color:#bdb2ff55;background:#15152bbd}
 .apn-modal.endpoint-sheet{align-items:flex-end;justify-content:center;padding:0;background:#050510b8}
-.endpoint-sheet-card{
+.سرور-sheet-card{
   width:min(620px,100%);max-height:88vh;overflow-y:auto;
   padding:14px 22px max(24px,env(safe-area-inset-bottom));
   border-radius:25px 25px 0 0;border:1px solid #b9adff66;border-bottom:0;
@@ -1617,7 +1618,7 @@ body{background:#142a2b;color:#f5fff9}
   <div class="apn-modal-card endpoint-sheet-card">
     <div class="sheet-handle"></div>
     <div id="endpointModalIcon" class="apn-loader"></div>
-    <h3 class="apn-modal-title" id="endpointModalTitle">در حال اسکن Endpoint</h3>
+    <h3 class="apn-modal-title" id="endpointModalTitle">در حال اسکن سرور</h3>
     <p class="apn-modal-message" id="endpointModalMessage">لطفاً تا پایان فرایند منتظر بمانید.</p>
     <div id="endpointCount" class="endpoint-count" hidden></div>
     <div class="result-details" id="resultDetails" hidden>
@@ -1663,7 +1664,7 @@ body{background:#142a2b;color:#f5fff9}
     </div>
   </div>
 
-  <h2>انتخاب موتور اتصال</h2>
+  <h2>ساخت سرور VLESS</h2>
   <p>انتخاب دیتابیس، موتور اتصال و لوکیشن برای ادامه</p>
 </section>
 
@@ -2008,19 +2009,13 @@ body{background:#142a2b;color:#f5fff9}
   <div class="engine-picker" id="enginePicker" hidden>
     <h4 class="engine-picker-title">ابتدا موتور اتصال موردنظر را انتخاب کنید</h4>
     <div class="engine-grid" id="engineGrid">
-      <button class="engine-card" type="button" data-engine="Xray"><span class="engine-icon"><img src="./assets/v2ray.webp" alt="V2Ray"></span><span class="engine-name">Xray</span><span class="engine-code">XRAY</span></button>
-      <button class="engine-card" type="button" data-engine="Tor"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=torproject.org&sz=128" alt="Tor"></span><span class="engine-name">Tor</span><span class="engine-code">TOR</span></button>
-      <button class="engine-card" type="button" data-engine="Miami Q"><span class="engine-icon"><img src="./assets/miami.webp" alt="Miami Q"></span><span class="engine-name">Miami Q</span><span class="engine-code">MIAMI-Q</span></button>
-      <button class="engine-card" type="button" data-engine="SSH"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=ssh.com&sz=128" alt="SSH"></span><span class="engine-name">SSH</span><span class="engine-code">SSH</span></button>
-      <button class="engine-card" type="button" data-engine="DARK VPN (رسمی سایت)"><span class="engine-icon"><img src="./assets/e-lite.webp" alt="E-LITE"></span><span class="engine-name">DARK VPN (رسمی سایت)</span><span class="engine-code">DARK</span></button>
-      <button class="engine-card" type="button" data-engine="Nekobox"><span class="engine-icon"><img src="./assets/nekobox.webp" alt="NekoBox"></span><span class="engine-name">Nekobox</span><span class="engine-code">NEKO</span></button>
-      <button class="engine-card" type="button" data-engine="SSTP"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=128" alt="SSTP"></span><span class="engine-name">SSTP</span><span class="engine-code">SSTP</span></button>
-      <button class="engine-card" type="button" data-engine="Argo"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=cloudflare.com&sz=128" alt="Argo"></span><span class="engine-name">Argo</span><span class="engine-code">ARGO</span></button>
-      <button class="engine-card" type="button" data-engine="Octohide"><span class="engine-icon">🛡️</span><span class="engine-name">Octohide</span><span class="engine-code">OCTO</span></button>
-      <button class="engine-card" type="button" data-engine="Psiphon"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=psiphon.ca&sz=128" alt="Psiphon"></span><span class="engine-name">Psiphon</span><span class="engine-code">PSI</span></button>
-      <button class="engine-card" type="button" data-engine="CF Amnezia-WG"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=amnezia.org&sz=128" alt="Amnezia"></span><span class="engine-name">CF Amnezia-WG</span><span class="engine-code">AMN-WG</span></button>
-      <button class="engine-card" type="button" data-engine="Google RTD"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=128" alt="Google RTD"></span><span class="engine-name">Google RTD</span><span class="engine-code">G-RTD</span></button>
-      <button class="engine-card" type="button" data-engine="D. WEB Bridge Xw2"><span class="engine-icon"><img src="./assets/dweb.webp" alt="D. Web Bridge"></span><span class="engine-name">D. WEB Bridge Xw2</span><span class="engine-code">XW2</span></button>
+      <button class="engine-card" type="button" data-engine="Tor"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=torproject.org&sz=128" alt="Tor"></span><span class="engine-name">Tor Service</span><span class="engine-code">TOR</span></button>
+      <button class="engine-card" type="button" data-engine="SSH"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=ssh.com&sz=128" alt="SSH"></span><span class="engine-name">SSH Service</span><span class="engine-code">SSH</span></button>
+      <button class="engine-card" type="button" data-engine="SSTP"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=128" alt="SSTP"></span><span class="engine-name">SSTP Service</span><span class="engine-code">SSTP</span></button>
+      <button class="engine-card" type="button" data-engine="ARGO VPN"><span class="engine-icon"><img src="https://dl.memuplay.com/new_market/img/com.filtershekanha.argovpn.icon.2022-12-24-10-46-19.png" alt="Argo VPN" loading="lazy"></span><span class="engine-name">Argo Service</span><span class="engine-code">ARGO</span></button>
+      <button class="engine-card" type="button" data-engine="PSIPHON"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=psiphon.ca&sz=128" alt="PSIPHON"></span><span class="engine-name">Psiphon Service</span><span class="engine-code">PSI</span></button>
+      <button class="engine-card" type="button" data-engine="AMNEZIA VPN"><span class="engine-icon"><img src="https://www.google.com/s2/favicons?domain=amnezia.org&sz=128" alt="AMNEZIA VPN"></span><span class="engine-name">Amnezia Service</span><span class="engine-code">AMNEZIA</span></button>
+      <button class="engine-card" type="button" data-engine="Hotspot VPN"><span class="engine-icon"><img src="https://store-images.s-microsoft.com/image/apps.42221.9007199266285780.4de78db9-2d14-41dc-84e0-e448787e972e.735ab90d-5817-4568-9dbd-1e11af3bba91" alt="Hotspot Shield" loading="lazy"></span><span class="engine-name">Hotspot Service</span><span class="engine-code">HOTSPOT SHIELD</span></button>
     </div>
     <div class="engine-status" id="engineStatus" role="status">پس از انتخاب موتور، فهرست کشورها نمایش داده می‌شود.</div>
   </div>
@@ -2048,7 +2043,7 @@ body{background:#142a2b;color:#f5fff9}
         <option value="">ابتدا دیتابیس انتخاب کنید</option>
       </select>
 
-      <span class="hint">پس از انتخاب کشور، اطلاعات اشتراک و گزینه جستجوی Endpoint نمایش داده می‌شود.</span>
+      <span class="hint">پس از انتخاب کشور، اطلاعات اشتراک و گزینه جستجوی سرور نمایش داده می‌شود.</span>
 
       <div class="subscription-card" id="subscriptionCard" hidden>
         <div class="subscription-head">
@@ -2062,7 +2057,7 @@ body{background:#142a2b;color:#f5fff9}
           <div class="subscription-meta-item"><span>حجم</span><strong>100GB</strong></div>
           <div class="subscription-meta-item"><span>انقضا</span><strong>10 روز</strong></div>
         </div>
-        <button class="btn primary" id="scanEndpointBtn" type="button">جستجو Endpoint</button>
+        <button class="btn primary" id="scanEndpointBtn" type="button">جستجو سرور</button></button>
       </div>
     </div>
   </div>
@@ -2693,7 +2688,7 @@ function selectCountry(code, autoScan = true) {
   $("subscriptionCountryName").textContent =
     getCountryFlag(code) + "  " + getCountryName(code) + " (" + code + ")";
 
-  setStatus("لوکیشن انتخاب شد: " + getCountryName(code) + " — جستجوی Endpoint آغاز شد.");
+  setStatus("لوکیشن انتخاب شد: " + getCountryName(code) + " — جستجوی سرور آغاز شد.");
   closeCountryMenu();
   if(autoScan) startEndpointScan();
 }
@@ -2742,12 +2737,22 @@ async function startEndpointScan() {
     const sourceConfigs = raw.split(/\r?\n/).map(line => line.trim()).filter(line => /^vless:\/\//i.test(line));
     if (!sourceConfigs.length) throw new Error("هیچ کانفیگ vless:// داخل فایل " + countryFile + " پیدا نشد.");
 
-    // Replace the old remark with the selected engine name.
-    // Numbering follows the config order in the selected country's file.
+    // Use the requested service label for the selected connection engine.
+    // Numbering starts at 1 for every country and follows that country's config order.
     const countryFlag = getCountryFlag(selectedCountry);
+    const serviceLabels = {
+      "Tor": "Tor",
+      "SSH": "SSH",
+      "SSTP": "SSTP",
+      "ARGO VPN": "Argo",
+      "PSIPHON": "Psiphon",
+      "AMNEZIA VPN": "Amnezia",
+      "Hotspot VPN": "Hotspot Shield"
+    };
+    const serviceLabel = serviceLabels[selectedEngine] || selectedEngine;
     const configs = sourceConfigs.map((config, index) => {
       const uriWithoutRemark = config.split("#", 1)[0];
-      const remark = countryFlag + "@DarkvpnTG • " + selectedEngine +
+      const remark = countryFlag + "@DarkvpnTG • " + serviceLabel +
         " Service - No. " + (index + 1);
       return uriWithoutRemark + "#" + encodeURIComponent(remark);
     });
